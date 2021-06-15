@@ -100,7 +100,7 @@ whole_brain = create_wholebrain_csv(wholebrain_data,lh_stats,rh_stats,subjectID)
 whole_brain.to_csv('whole_brain.csv',index=False)
 
 # append subject ID to data with coordinates from dan's code
-rois = pd.read_csv('rois.csv')
-rois['subjectID'] = [ subjectID for x in range(len(rois['ROI_name'])) ]
-rois = rois[ ['subjectID'] +  [ f for f in rois.columns if f != 'subjectID']] 
-rois.to_csv('rois.csv',index=False)
+# rois = pd.read_csv('rois.csv')
+# rois['subjectID'] = [ subjectID for x in range(len(rois['ROI_name'])) ]
+# rois = rois[ ['subjectID'] +  [ f for f in rois.columns if f != 'subjectID']] 
+# rois.to_csv('rois.csv',index=False)

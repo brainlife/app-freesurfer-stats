@@ -21,6 +21,6 @@ fi
 if [ ! -f whole_brain.csv ] || [ ! -f cortex.csv ]; then
 	echo "output missing" && exit 1
 else
-	echo "complete" && mkdir -p ./parc-stats/ && mv *.csv ./parc-stats/ && rm -rf *.nii.gz *.gii *.stats lut.txt
+	echo "complete" && mkdir -p ./parc-stats/ ./parc-stats/parc-stats && mv *.csv ./parc-stats/parc-stats/ && rm -rf *.nii.gz *.gii *.stats lut.txt
    	exit 0
 fi

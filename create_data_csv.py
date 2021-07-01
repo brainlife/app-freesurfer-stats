@@ -36,7 +36,10 @@ def extract_wholebrain_stats(input_data_lines,version):
     dataStructure['brain'] = {}
     dataStructure['brain']['total_volume'] = float(lines_var[lines_var.index([ f for f in lines_var if 'BrainSegVol' in f ][0])].replace(',','').split()[7])
     dataStructure['brain']['total_intracranial_volume'] = float(lines_var[lines_var.index([ f for f in lines_var if 'EstimatedTotalIntraCranialVol' in f ][0])].replace(',','').split()[8])
-
+    dataStructure['brain']['lh_euler_number'] = float(lines_var[lines_var.index([f for f in lines_var if 'lh'+'SurfaceHoles' in f][0])].replace(',','').split()[-2])
+    dataStructure['brain']['rh_euler_number'] = float(lines_var[lines_var.index([f for f in lines_var if 'rh'+'SurfaceHoles' in f][0])].replace(',','').split()[-2])
+    dataStructure['brain']['total_euler_number'] = float(np.sum(dataStructre['brain']['lh_euler_number'],dataStructre['brain']['rh_euler_number'])
+    
     return dataStructure
 
 def extract_subcortical_stats(input_data_lines,version,subjectID):
@@ -61,14 +64,17 @@ def create_wholebrain_csv(wb_data,lh_data,rh_data,subjectID):
     whole_brain = whole_brain.append({'subjectID': subjectID},ignore_index=True)
     whole_brain.insert(1,"Total_Brain_volume",wb_data['brain']['total_volume'],True)
     whole_brain.insert(2,"Total_Intracranial_volume",wb_data['brain']['total_intracranial_volume'],True)
-    whole_brain.insert(3,"Total_Gray_Matter_volume",wb_data['gm']['total_volume'],True)
-    whole_brain.insert(4,"Total_White_Matter_volume",wb_data['wm']['total_volume'],True)
-    whole_brain.insert(5,"Left_Hemisphere_Gray_Matter_volume",wb_data['gm']['lh_volume'],True)
-    whole_brain.insert(6,"Right_Hemisphere_Gray_Matter_volume",wb_data['gm']['rh_volume'],True)
-    whole_brain.insert(7,"Left_Hemisphere_White_Matter_volume",wb_data['wm']['lh_volume'],True)
-    whole_brain.insert(8,"Right_Hemisphere_White_Matter_volume",wb_data['wm']['rh_volume'],True)
-    whole_brain.insert(9,"Left_Hemisphere_Mean_Gray_Matter_thickness",lh_data.whole_brain_measurements['mean_thickness_mm'],True)
-    whole_brain.insert(10,"Right_Hemisphere_Mean_Gray_Matter_thickness",rh_data.whole_brain_measurements['mean_thickness_mm'],True)
+    whole_brain.insert(3,"Total_Euler_number",wb_data['brain']['total_euler_number'],True)
+    whole_brain.insert(4,"Total_Gray_Matter_volume",wb_data['gm']['total_volume'],True)
+    whole_brain.insert(5,"Total_White_Matter_volume",wb_data['wm']['total_volume'],True)
+    whole_brain.insert(6,"Left_Hemisphere_Gray_Matter_volume",wb_data['gm']['lh_volume'],True)
+    whole_brain.insert(7,"Right_Hemisphere_Gray_Matter_volume",wb_data['gm']['rh_volume'],True)
+    whole_brain.insert(8,"Left_Hemisphere_White_Matter_volume",wb_data['wm']['lh_volume'],True)
+    whole_brain.insert(9,"Right_Hemisphere_White_Matter_volume",wb_data['wm']['rh_volume'],True)
+    whole_brain.insert(10,"Left_Hemisphere_Mean_Gray_Matter_thickness",lh_data.whole_brain_measurements['mean_thickness_mm'],True)
+    whole_brain.insert(11,"Right_Hemisphere_Mean_Gray_Matter_thickness",rh_data.whole_brain_measurements['mean_thickness_mm'],True)
+    whole_brain.insert(12,"Left_Hemisphere_Euler_number",wb_data['brain']['lh_euler_number'],True)
+    whole_brain.insert(13,"Right_Hemisphere_Euler_number",wb_data['brain']['rh_euler_number'],True)
 
     return whole_brain
 

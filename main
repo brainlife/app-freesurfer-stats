@@ -22,6 +22,6 @@ if [ ! -f ./parc-stats/aseg_nodes.csv ]; then
 	echo "output missing"
 	exit 1
 else
-	echo "complete" && mkdir -p raw && mv ./tmp/*.txt ./tmp/*.csv ./tmp/*.sum ./raw/ && rm -rf *.nii.gz tmp
+	echo "complete" && mkdir -p raw ./parc-stats/parc-stats && mv ./parc-stats/aseg_nodes.csv ./parc-stats/parc-stats/ && mv ./tmp/*.txt ./tmp/*.csv ./tmp/*.sum ./raw/ && rm -rf *.nii.gz tmp
    	exit 0
 fi

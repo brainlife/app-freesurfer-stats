@@ -17,7 +17,7 @@ export SUBJECTS_DIR=./
 [ ! -f ./thickness.nii.gz ] && mri_surf2vol --o ./thickness.nii.gz --subject output --so ./output/surf/lh.white ./output/surf/lh.thickness --so ./output/surf/rh.white ./output/surf/rh.thickness --ribbon ./output/mri/ribbon.mgz
 
 # compute stats within parcellation
-[ ! -f ./thickness.sum ] && mri_segstats --seg ${parc} --i ./thickness.nii.gz --sum ./thickness.sum
+[ ! -f ./thickness.sum ] && mri_segstats --seg ${parc} --ctab ${FREESURFER_HOME}/FreeSurferColorLUT.txt --i ./thickness.nii.gz --sum ./thickness.sum
 
 # make stats file cleaner	
 [ ! -f ./thickness.txt ] && tail ./thickness.sum -n +54 > ./thickness.txt
@@ -38,7 +38,7 @@ do
 		echo ${i}
 		met_name=`echo ${i//.nii.gz/}`
 		[ ! -f ${met_name}_parc.nii.gz ] && mri_vol2vol --mov ${i} --targ ${parc} --regheader --interp nearest --o ./${met_name}_parc.nii.gz
-		[ ! -f ./${met_name}.sum ] && mri_segstats --seg ${parc} --i ./${met_name}_parc.nii.gz --sum ./${met_name}.sum
+		[ ! -f ./${met_name}.sum ] && mri_segstats --seg ${parc} --ctab ${FREESURFER_HOME}/FreeSurferColorLUT.txt  --i ./${met_name}_parc.nii.gz --sum ./${met_name}.sum
 		
 		# make stats file cleaner
 		[ ! -f ./${met_name}.txt ] && tail ./${met_name}.sum -n +54 > ./${met_name}.txt

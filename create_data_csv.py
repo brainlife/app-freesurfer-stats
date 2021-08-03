@@ -7,6 +7,7 @@ import glob
 import sys
 import os
 import pandas as pd
+import numpy as np
 
 with open('config.json') as config_f:
     config = json.load(config_f)
@@ -18,12 +19,14 @@ if not os.path.exists('parc-stats'):
 diffusion_measures = [ f.split('.')[1] for f in os.listdir('./tmp/') if f.split('.')[0] == 'subcort_num' if f.split('.')[2] == 'csv' ]
 
 # set up the way i like
-if all(x in diffusion_measures for x in ['ndi','fa']):
-    diffusion_measures = ['ad','fa','md','rd','ndi','isovf','odi']
-elif 'fa' in diffusion_measures:
-    diffusion_measures = ['ad','fa','md','rd']
-else:
-    diffusion_measures = ['ndi','isovf','odi']
+# if all(x in diffusion_measures for x in ['ndi','fa']):
+#     diffusion_measures = ['ad','fa','md','rd','ndi','isovf','odi']
+# elif 'fa' in diffusion_measures:
+#     diffusion_measures = ['ad','fa','md','rd']
+# else:
+#     diffusion_measures = ['ndi','isovf','odi']
+
+diffusion_measures = np.sort(diffusion_measures).tolist()
 
 data_columns = ['parcID','subjectID','structureID','nodeID','number_of_voxels'] + diffusion_measures + ['volume']
 

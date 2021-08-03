@@ -22,9 +22,9 @@ fi
 
 time singularity exec -e docker://brainlife/freesurfer-stats:1.2 ./createDataCsv.py
 
-if [ ! -f ./parc-stats/parc_nodes.csv ] || [ ! -f rois.csv ]; then
+if [ ! -f ./parc-stats/parc-stats/parc_nodes.csv ] || [ ! -f rois.csv ]; then
 	echo "output missing" && exit 1
 else
-	echo "complete" && mkdir -p ./parc-stats/ parc-stats/parc-stats && rm -rf thickness.csv && mv *.csv ./parc-stats/parc-stats && rm -rf *.nii.gz *.annot *.stats thickness_*.txt *.sum thickness.txt lut.txt tmpdata.txt ./output/
+	echo "complete" && mkdir -p ./parc-stats/ ./parc-stats/parc-stats && rm -rf thickness.csv && mv *.csv ./parc-stats/parc-stats && rm -rf *.nii.gz *.annot *.stats thickness_*.txt *.sum thickness.txt lut.txt tmpdata.txt ./output/
    	exit 0
 fi

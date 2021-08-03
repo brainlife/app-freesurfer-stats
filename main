@@ -5,13 +5,13 @@
 
 parc=`jq -r '.parcellation' config.json`
 
-if [ ! -f lut.txt ]; then
-	time singularity exec -e docker://brainlife/freesurfer-stats:1.2 ./createColorLUT.py
-fi
+# if [ ! -f lut.txt ]; then
+# 	time singularity exec -e docker://brainlife/freesurfer-stats:1.2 ./createColorLUT.py
+# fi
 
-if [ ! -f rois.csv ]; then
-	time singularity exec -e docker://brainlife/mcr:r2019a ./compiled/parcRoiStats
-fi
+# if [ ! -f rois.csv ]; then
+# 	time singularity exec -e docker://brainlife/mcr:r2019a ./compiled/parcRoiStats
+# fi
 
 time singularity exec -e docker://brainlife/fsl:5.0.9 ./handle_scaling.sh
 
@@ -24,9 +24,10 @@ fi
 
 time singularity exec -e docker://brainlife/freesurfer-stats:1.2 ./createDataCsv.py
 
-if [ ! -f ./parc-stats/parc_nodes.csv ] || [ ! -f rois.csv ]; then
+# if [ ! -f ./parc-stats/parc_nodes.csv ] || [ ! -f rois.csv ]; then
+if [ ! -f ./parc-stats/parc_nodes.csv ]; then
 	echo "output missing" && exit 1
 else
-	echo "complete" && mkdir -p ./parc-stats/parc-stats && mv ./parc-stats/parc_nodes.csv ./parc-stats/parc-stats/ && mv rois.csv ./parc-stats/parc-stats/ && rm -rf *.nii.gz *.annot *.stats *.txt *.sum *.csv ./output/
+	echo "complete" && mkdir -p ./parc-stats/parc-stats && mv ./parc-stats/parc_nodes.csv ./parc-stats/parc-stats/ && rm -rf *.nii.gz *.annot *.stats *.txt *.sum *.csv ./output/
    	exit 0
 fi

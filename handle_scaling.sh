@@ -15,8 +15,18 @@ ndi=`jq -r '.ndi' config.json`
 isovf=`jq -r '.isovf' config.json`
 odi=`jq -r '.odi' config.json`
 myelin=`jq -r '.myelin' config.json`
+T1=`jq -r '.T1' config.json`
+R1=`jq -r '.R1' config.json`
+M0=`jq -r '.M0' config.json`
+PD=`jq -r '.PD' config.json`
+MTV=`jq -r '.MTV' config.json`
+VIP=`jq -r '.VIP' config.json`
+SIR=`jq -r '.SIR' config.json`
+WF=`jq -r '.WF' config.json`
 
 mkdir -p tmp
+
+qmri="T1 R1 M0 PD MTV VIP SIR WF"
 
 # set metrics for every situation
 echo "parsing input diffusion metrics"
@@ -35,9 +45,16 @@ fi
 echo "input diffusion metrics set"
 
 if [[ ! $myelin == "null" ]]; then
-	METRIC=$METRIC+" myelin"
+	METRIC=$METRIC" myelin"
 fi
 
+for i in ${qmri}
+do
+	met_tmp=$(eval "echo \$${i}")
+	if [ -f ${met_tmp} ]; then
+		METRIC=$METRIC" ${i}"
+	fi
+done
 
 test_mets="ad md rd"
 #### loop through metrics and generate stats text files ####

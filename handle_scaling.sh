@@ -48,13 +48,15 @@ if [[ ! $myelin == "null" ]]; then
 	METRIC=$METRIC+" myelin"
 fi
 
-for i in ${qmri}
-do
-	met_tmp=$(eval "echo \$${i}")
-	if [ -f ${met_tmp} ]; then
-		METRIC=$METRIC" ${i}"
-	fi
-done
+if [[ ! $T1 == "null" ]]; then
+	for i in ${qmri}
+	do
+		met_tmp=$(eval "echo \$${i}")
+		if [ -f ${met_tmp} ]; then
+			METRIC=$METRIC" ${i}"
+		fi
+	done
+fi
 
 test_mets="ad md rd"
 #### loop through metrics and generate stats text files ####

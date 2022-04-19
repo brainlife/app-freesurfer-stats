@@ -50,8 +50,7 @@ You can submit this App online at [https://doi.org/10.25663/brainlife.app.443](h
     "freesurfer": "/input/freesurfer/output",
     "parcellation": "/input/parcellation/parc.nii.gz",
     "key": "/input/parcellation/key.txt",
-    "label": "/input/parcellation/label.json",
-    "parcellation": "aparc"
+    "label": "/input/parcellation/label.json"
 }
 ```
 

@@ -1,5 +1,5 @@
 [![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
-[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-brainlife.app.554-blue.svg)](https://doi.org/10.25663/brainlife.app.554)
+[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-brainlife.app.389-blue.svg)](https://doi.org/10.25663/brainlife.app.389)
 
 # Compute summary statistics of diffusion measures from subcortical segmentation
 
@@ -37,7 +37,7 @@ We kindly ask that you cite the following articles when publishing papers and co
 
 ### On Brainlife.io
 
-You can submit this App online at [https://doi.org/10.25663/brainlife.app.554](https://doi.org/10.25663/brainlife.app.554) via the 'Execute' tab.
+You can submit this App online at [https://doi.org/10.25663/brainlife.app.389](https://doi.org/10.25663/brainlife.app.389) via the 'Execute' tab.
 
 ### Running Locally (on your machine)
 

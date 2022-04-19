@@ -47,7 +47,7 @@ You can submit this App online at [https://doi.org/10.25663/brainlife.app.389](h
 
 ```json
 {
-    "freesurfer": "/input/freesurfer/output.nii.gz",
+    "freesurfer": "/input/freesurfer/output",
     "fa": "/input/tensor/fa.nii.gz",
     "md": "/input/tensor/md.nii.gz",
     "rd": "/input/tensor/rd.nii.gz",

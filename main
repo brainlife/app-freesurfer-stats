@@ -1,10 +1,30 @@
 #!/bin/bash
-
-#PBS -l nodes=1:ppn=1
-#PBS -l vmem=16gb
-#PBS -l walltime=0:10:00
-#PBS -N app-freesurer-stats
+#PBS -l nodes=1:ppn=4,vmem=29gb,walltime=00:30:00
+#PBS -N app-freesurfer-stats
 #PBS -V
 
-time singularity exec -e docker://brainlife/freesurfer-stats:1.2 ./create_data_csv.py
+fsdir=`jq -r '.freesurfer' config.json`
+parc=`jq -r '.parcellation' config.json`
 
+[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
+echo $FREESURFER_LICENSE > license.txt
+
+if [ ! -f ${parc}+aseg.nii.gz ]; then
+  time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer-mini:6.0.1 bash -c "mri_convert ${fsdir}/mri/${parc}+aseg.mgz ./${parc}+aseg.nii.gz"
+fi
+
+if [ ! -f rois.csv ]; then
+	time singularity exec -e docker://brainlife/mcr:r2019a ./compiled/parcRoiStats
+fi
+
+if [ ! -f whole_brain.csv ]; then
+	time singularity exec -e docker://brainlife/freesurfer-stats:1.2 ./create_data_csv.py
+fi
+
+if [ ! -f whole_brain.csv ] || [ ! -f rois.csv ]; then
+	echo "output missing" && exit 1
+else
+	echo "complete" && mkdir -p ./output  ./output/parc-stats/ && mv *.csv ./output/parc-stats/ && rm -rf *.nii.gz
+	echo "{\"tags\": [\"${parc}\"]}" > product.json
+   	exit 0
+fi

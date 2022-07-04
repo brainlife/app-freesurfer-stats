@@ -27,5 +27,4 @@ else
 	echo "complete" && mkdir -p ./output  ./output/parc-stats/ && mv *.csv ./output/parc-stats/ && rm -rf *.nii.gz
 	echo "{\"tags\": [\"${parc}\"]}" > product.json
    	exit 0
-
 fi

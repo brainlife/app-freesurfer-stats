@@ -9,6 +9,23 @@ import os
 import pandas as pd
 from freesurfer_stats import CorticalParcellationStats
 
+def extract_nuclei_stats(lh_data_lines,rh_data_lines,subjectID):
+
+    lh = lh_data_lines.readlines()
+    rh = rh_data_lines.readlines()
+    lh_data = [ f for f in lh if '#' not in f ]
+    rh_data = [ f for f in rh if '#' not in f ]
+
+    outdata = pd.DataFrame(columns={'segID','subjectID','structureID','nodeID','gray_matter_volume_mm^3'})
+    outdata['segID'] = [ f.split()[1] for f in lh_data ] + [ f.split()[1] for f in rh_data ]
+    outdata['structureID'] = [ 'lh_'+f.split()[4] for f in lh_data ] + [ 'rh_'+f.split()[4] for f in rh_data ]
+    outdata['gray_matter_volume_mm^3'] = [ 'lh_'+f.split()[3] for f in lh_data ] + [ 'rh_'+f.split()[3] for f in rh_data ]
+    outdata['nodeID'] = [ 1 for f in range(len(outdata['structureID'])) ]
+    outdata['subjectID'] = [ subjectID for f in range(len(outdata['structureID'])) ]
+    outdata = outdata.reindex(columns=['segID','subjectID','structureID', 'nodeID', 'gray_matter_volume_mm^3'])
+
+    return outdata
+
 def extract_wholebrain_stats(input_data_lines,version):
     if version == 'v5':
         tissueName = 'Cortical'
@@ -121,6 +138,33 @@ whole_brain.to_csv('whole_brain.csv',index=False)
 wholebrain = open(output_dir+'/stats/aseg.stats')
 subcortical = extract_subcortical_stats(wholebrain,fsurf_version,subjectID)
 subcortical.to_csv('subcortical.csv',index=False)
+
+# hippocampal subfields
+hipp_files = glob.glob(output_dir+'/stats/hipp*')
+
+if hipp_files:
+    lh_hipp = open([ f for f in hipp_files if 'lh' in f ][0])
+    rh_hipp = open([ f for f in hipp_files if 'rh' in f ][0])
+    hipp = extract_nuclei_stats(lh_hipp,rh_hipp,subjectID)
+    hipp.to_csv('hippocampal.csv',index=False)
+
+# amygdala nuclei
+amyg_files = glob.glob(output_dir+'/stats/amyg*')
+
+if amyg_files:
+    lh_amyg = open([ f for f in amyg_files if 'lh' in f ][0])
+    rh_amyg = open([ f for f in amyg_files if 'rh' in f ][0])
+    amyg = extract_nuclei_stats(lh_amyg,rh_amyg,subjectID)
+    amyg.to_csv('amygdala.csv',index=False)
+
+# thalamic nuclei
+thal_files = glob.glob(output_dir+'/stats/thal*')
+
+if thal_files:
+    lh_thal = open([ f for f in thal_files if 'lh' in f ][0])
+    rh_thal = open([ f for f in thal_files if 'rh' in f ][0])
+    thal = extract_nuclei_stats(lh_thal,rh_thal,subjectID)
+    thal.to_csv('thalamus.csv',index=False)
 
 # append subject ID to data with coordinates from dan's code
 rois = pd.read_csv('rois.csv')

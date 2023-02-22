@@ -9,6 +9,35 @@ import os
 import pandas as pd
 from freesurfer_stats import CorticalParcellationStats
 
+
+def extract_cortical_stats(parc):
+
+    lh_stats = CorticalParcellationStats.read(output_dir+'/stats/lh.'+parc+'.stats')
+    dfl = lh_stats.structural_measurements
+    dfl.rename(columns={'structure_name': 'structureID'},inplace=True)
+    dfl['structureID'] = [ 'lh_'+dfl['structureID'][f] for f in range(len(dfl['structureID'])) ]
+    dfl['subjectID'] = [ subjectID for x in range(len(dfl['structureID'])) ]
+    dfl['parcID'] = [ str(f+1) for f in range(len(dfl['structureID']))]
+    dfl['nodeID'] = [ int(1) for f in range(len(dfl['structureID'])) ]
+    dfl = dfl.reindex(columns=['parcID','subjectID','structureID','nodeID','number_of_vertices', 'surface_area_mm^2','gray_matter_volume_mm^3', 'average_thickness_mm','thickness_stddev_mm', 'integrated_rectified_mean_curvature_mm^-1','integrated_rectified_gaussian_curvature_mm^-2', 'folding_index','intrinsic_curvature_index'])
+
+    dfl.to_csv('lh.cortex.'+parc+'.csv',index=False)
+
+    rh_stats = CorticalParcellationStats.read(output_dir+'/stats/rh.'+parc+'.stats')
+    dfr = rh_stats.structural_measurements
+    dfr.rename(columns={'structure_name': 'structureID'},inplace=True)
+    dfr['structureID'] = [ 'rh_'+dfr['structureID'][f] for f in range(len(dfr['structureID'])) ]
+    dfr['subjectID'] = [ subjectID for x in range(len(dfr['structureID'])) ]
+    dfr['parcID'] = [ str(f+1) for f in range(len(dfr['structureID']))]
+    dfr['nodeID'] = [ int(1) for f in range(len(dfr['structureID'])) ]
+    dfr = dfr.reindex(columns=['parcID','subjectID','structureID','nodeID','number_of_vertices', 'surface_area_mm^2','gray_matter_volume_mm^3', 'average_thickness_mm','thickness_stddev_mm', 'integrated_rectified_mean_curvature_mm^-1','integrated_rectified_gaussian_curvature_mm^-2', 'folding_index','intrinsic_curvature_index'])
+
+    dfr.to_csv('rh.cortex.'+parc+'.csv',index=False)
+
+    dft = pd.concat([dfl,dfr],ignore_index=True)
+
+    return dft, lh_stats, rh_stats
+
 def extract_nuclei_stats(lh_data_lines,rh_data_lines,subjectID):
 
     lh = lh_data_lines.readlines()
@@ -17,9 +46,9 @@ def extract_nuclei_stats(lh_data_lines,rh_data_lines,subjectID):
     rh_data = [ f for f in rh if '#' not in f ]
 
     outdata = pd.DataFrame(columns={'segID','subjectID','structureID','nodeID','gray_matter_volume_mm^3'})
-    outdata['segID'] = [ f.split()[1] for f in lh_data ] + [ f.split()[1] for f in rh_data ]
+    outdata['segID'] = [ str(f.split()[1]) for f in lh_data ] + [ str(f.split()[1]) for f in rh_data ]
     outdata['structureID'] = [ 'lh_'+f.split()[4] for f in lh_data ] + [ 'rh_'+f.split()[4] for f in rh_data ]
-    outdata['gray_matter_volume_mm^3'] = [ 'lh_'+f.split()[3] for f in lh_data ] + [ 'rh_'+f.split()[3] for f in rh_data ]
+    outdata['gray_matter_volume_mm^3'] = [ float(f.split()[3]) for f in lh_data ] + [ float(f.split()[3]) for f in rh_data ]
     outdata['nodeID'] = [ 1 for f in range(len(outdata['structureID'])) ]
     outdata['subjectID'] = [ subjectID for f in range(len(outdata['structureID'])) ]
     outdata = outdata.reindex(columns=['segID','subjectID','structureID', 'nodeID', 'gray_matter_volume_mm^3'])
@@ -62,14 +91,15 @@ def extract_subcortical_stats(input_data_lines,version,subjectID):
     subcort_data = [ f for f in lines_var if '#' not in f ]
 
     outdata = pd.DataFrame(columns={'segID','subjectID','structureID', 'nodeID', 'number_of_voxels', 'gray_matter_volume_mm^3'})
-    outdata['segID'] = [ f.split()[1] for f in subcort_data ]
+    outdata['segID'] = [ str(f.split()[1]) for f in subcort_data ]
     outdata['structureID'] = [ f.split()[4] for f in subcort_data ]
     outdata['subjectID'] = [ subjectID for f in range(len(outdata['structureID'])) ]
     outdata['nodeID'] = [ 1 for f in range(len(outdata['structureID'])) ]
     outdata['number_of_voxels'] = [ f.split()[2] for f in subcort_data ]
     outdata['gray_matter_volume_mm^3'] = [ f.split()[3] for f in subcort_data ]
+    outdata['parcellation'] = [ 'aseg' for f in outdata['subjectID'] ]
 
-    outdata = outdata.reindex(columns=['segID','subjectID','structureID', 'nodeID', 'number_of_voxels', 'gray_matter_volume_mm^3'])
+    outdata = outdata.reindex(columns=['segID','subjectID','structureID','parcellation', 'nodeID', 'number_of_voxels', 'gray_matter_volume_mm^3'])
 
     return outdata
 
@@ -102,30 +132,18 @@ if 'v5' in fsurf_tags:
 else:
     fsurf_version = 'v6+'
 
-# left hemisphere
-lh_stats = CorticalParcellationStats.read(output_dir+'/stats/lh.'+parc+'.stats')
-dfl = lh_stats.structural_measurements
-dfl.rename(columns={'structure_name': 'structureID'},inplace=True)
-dfl['structureID'] = [ 'lh_'+dfl['structureID'][f] for f in range(len(dfl['structureID'])) ]
-dfl['subjectID'] = [ subjectID for x in range(len(dfl['structureID'])) ]
-dfl['parcID'] = [ f+1 for f in range(len(dfl['structureID']))]
-dfl['nodeID'] = [ int(1) for f in range(len(dfl['structureID'])) ]
-dfl = dfl.reindex(columns=['parcID','subjectID','structureID','nodeID','number_of_vertices', 'surface_area_mm^2','gray_matter_volume_mm^3', 'average_thickness_mm','thickness_stddev_mm', 'integrated_rectified_mean_curvature_mm^-1','integrated_rectified_gaussian_curvature_mm^-2', 'folding_index','intrinsic_curvature_index'])
-dfl.to_csv('lh.cortex.csv',index=False)
+# cortical
+dft = pd.DataFrame()
+parcellations = ['aparc','aparc.a2009s','aparc.DKTatlas']
+for i in parcellations:
+    if os.path.isfile(output_dir+'/stats/lh.'+i+'.stats'):
+        if i == parc:
+            tmp,lh_stats,rh_stats = extract_cortical_stats(i)
+        else:
+            tmp,_,_ = extract_cortical_stats(i)
+        tmp['parcellation'] = [ i for f in tmp['subjectID'] ]
+        dft = pd.concat([dft,tmp])
 
-# right hemisphere
-rh_stats = CorticalParcellationStats.read(output_dir+'/stats/rh.'+parc+'.stats')
-dfr = rh_stats.structural_measurements
-dfr.rename(columns={'structure_name': 'structureID'},inplace=True)
-dfr['structureID'] = [ 'rh_'+dfr['structureID'][f] for f in range(len(dfr['structureID'])) ]
-dfr['subjectID'] = [ subjectID for x in range(len(dfr['structureID'])) ]
-dfr['parcID'] = [ f+1 for f in range(len(dfr['structureID']))]
-dfr['nodeID'] = [ int(1) for f in range(len(dfr['structureID'])) ]
-dfr = dfr.reindex(columns=['parcID','subjectID','structureID','nodeID','number_of_vertices', 'surface_area_mm^2','gray_matter_volume_mm^3', 'average_thickness_mm','thickness_stddev_mm', 'integrated_rectified_mean_curvature_mm^-1','integrated_rectified_gaussian_curvature_mm^-2', 'folding_index','intrinsic_curvature_index'])
-dfr.to_csv('rh.cortex.csv',index=False)
-
-# concat left and righ hemispheres
-dft = pd.concat([dfl,dfr],ignore_index=True)
 dft.to_csv('cortex.csv',index=False)
 
 # whole brain
@@ -139,6 +157,8 @@ wholebrain = open(output_dir+'/stats/aseg.stats')
 subcortical = extract_subcortical_stats(wholebrain,fsurf_version,subjectID)
 subcortical.to_csv('subcortical.csv',index=False)
 
+final_out = pd.concat([dft,subcortical])
+
 # hippocampal subfields
 hipp_files = glob.glob(output_dir+'/stats/hipp*')
 
@@ -146,7 +166,10 @@ if hipp_files:
     lh_hipp = open([ f for f in hipp_files if 'lh' in f ][0])
     rh_hipp = open([ f for f in hipp_files if 'rh' in f ][0])
     hipp = extract_nuclei_stats(lh_hipp,rh_hipp,subjectID)
+    hipp['parcellation'] = [ 'hippocampus' for f in hipp['subjectID'] ]
     hipp.to_csv('hippocampal.csv',index=False)
+
+    final_out = pd.concat([final_out,hipp])
 
 # amygdala nuclei
 amyg_files = glob.glob(output_dir+'/stats/amyg*')
@@ -155,7 +178,10 @@ if amyg_files:
     lh_amyg = open([ f for f in amyg_files if 'lh' in f ][0])
     rh_amyg = open([ f for f in amyg_files if 'rh' in f ][0])
     amyg = extract_nuclei_stats(lh_amyg,rh_amyg,subjectID)
+    amyg['parcellation'] = [ 'amygdala' for f in amyg['subjectID'] ]
     amyg.to_csv('amygdala.csv',index=False)
+
+    final_out = pd.concat([final_out,amyg])
 
 # thalamic nuclei
 thal_files = glob.glob(output_dir+'/stats/thal*')
@@ -164,7 +190,12 @@ if thal_files:
     lh_thal = open([ f for f in thal_files if 'lh' in f ][0])
     rh_thal = open([ f for f in thal_files if 'rh' in f ][0])
     thal = extract_nuclei_stats(lh_thal,rh_thal,subjectID)
+    thal['parcellation'] = [ 'thalamus' for f in thal['subjectID'] ]
     thal.to_csv('thalamus.csv',index=False)
+
+    final_out = pd.concat([final_out,thal])
+
+final_out.to_csv('all.csv',index=False)
 
 # append subject ID to data with coordinates from dan's code
 rois = pd.read_csv('rois.csv')

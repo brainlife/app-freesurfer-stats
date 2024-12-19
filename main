@@ -10,7 +10,7 @@ parc=`jq -r '.parcellation' config.json`
 echo $FREESURFER_LICENSE > license.txt
 
 if [ ! -f ${parc}+aseg.nii.gz ]; then
-  time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer-mini:6.0.1 bash -c "mri_convert ${fsdir}/mri/${parc}+aseg.mgz ./${parc}+aseg.nii.gz"
+  time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer-mini:6.0.1 mri_convert "${fsdir}/mri/${parc}+aseg.mgz" "./${parc}+aseg.nii.gz"
 fi
 
 if [ ! -f rois.csv ]; then

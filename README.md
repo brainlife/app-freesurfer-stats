@@ -3,6 +3,38 @@
 
 # Freesurfer Statistics
 
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+**Computes volume, cortical thickness and mean diffusion measures (DTI, optional NODDI, myelin, qMRI) in each ROI of a FreeSurfer <parcellation>+aseg volume with mri_segstats.**
+
+Uses the chosen FreeSurfer parcellation volume (aparc, aparc.a2009s or aparc.DKTatlas +aseg) from the subject directory, resamples each measure map to it by header and summarises thickness and every measure per ROI with mri_segstats into parc_nodes.csv. Use it when the ROIs of interest are FreeSurfer's own parcellations; for a custom parcellation use the 'Parcellation (volume)' variant. Measure maps must be aligned with the FreeSurfer anatomy.
+
+Run it on brainlife.io: [https://doi.org/10.25663/brainlife.app.554](https://doi.org/10.25663/brainlife.app.554)
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `freesurfer` | `neuro/freesurfer` | yes | Output directory of FreeSurfer recon-all for the subject. |
+| `tensor` | `neuro/tensor` | yes | DTI (and optionally DKI) measures such as FA, MD, RD and AD. |
+| `noddi` | `neuro/noddi` | no | Optional NODDI maps (NDI, ISOVF, ODI). |
+| `myelin` | `neuro/myelin-map` | no | Optional myelin map. |
+| `qmri` | `neuro/anat/qmri` | no | Optional quantitative MRI maps (T1, R1, M0, PD, MTV, VIP, SIR, WF). |
+
+| Output | Datatype | Description |
+|---|---|---|
+| `parc-stats` | `neuro/parc-stats` | parc_nodes.csv with volume, thickness and mean measure values per ROI. |
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `parcellation` | enum | `aparc.a2009s` | This is the freesurfer parcellation to use to compute statistics within Options: `aparc`, `aparc.a2009s`, `aparc.DKTatlas`. |
+
+Runtime: container `brainlife/freesurfer-stats:1.2`; 4 CPUs; 29 GB memory; 2.5 h walltime; needs `FREESURFER_LICENSE`.
+
+Please cite:
+- Avesani P, McPherson B, Hayashi S, et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. Sci Data 6, 69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
+- Dale AM, Fischl B, Sereno MI. Cortical surface-based analysis. I. Segmentation and surface reconstruction. NeuroImage 9, 179-194 (1999).
+
+<!-- brainlife-app:end -->
+
 This app will convert the Freesurfer stats files created during recon-all into a user-friendly, tidy format csv for downstream analyses. This app uses an open source package called 'FreesurferStats' to do the conversion for us. This app will output a parc-stats datatype containing the information for each parcel for the chosen Freesurfer parcellation.
 
 ### Authors

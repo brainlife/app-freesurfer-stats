@@ -10,9 +10,9 @@
   <a href="https://github.com/brainlife/app-freesurfer-stats/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-MIT-lightgrey.svg" alt="MIT license"></a>
 </p>
 
-> 📍 **This branch, `updated-parc-stats-surface-v1.0`, is the brainlife.io App Parcellation Statistics - Surface** ([doi:10.25663/brainlife.app.484](https://doi.org/10.25663/brainlife.app.484)). The other Apps in this repository are listed under **Versions on brainlife.io** below.
+> **This branch, `updated-parc-stats-surface-v1.0`, is the brainlife.io App Parcellation Statistics - Surface** ([doi:10.25663/brainlife.app.484](https://doi.org/10.25663/brainlife.app.484)). The other Apps in this repository are listed under **Versions on brainlife.io** below.
 
-## 🧠 At a glance
+## At a glance
 
 <!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
 
@@ -22,21 +22,21 @@ Converts the left and right annotations onto the subject's FreeSurfer surfaces, 
 
 | | |
 |---|---|
-| 📥 **Inputs** | `neuro/surface/data` · `neuro/freesurfer` |
-| 📤 **Outputs** | `neuro/parc-stats` |
-| 🐳 **Container** | `brainlife/freesurfer-stats:1.2` |
-| ⚙️ **Resources** | 4 CPUs · 29 GB memory · 2.5 h walltime |
-| 🔑 **Requires** | `FREESURFER_LICENSE` |
-| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.484](https://doi.org/10.25663/brainlife.app.484) |
+| **Inputs** | `neuro/surface/data` · `neuro/freesurfer` |
+| **Outputs** | `neuro/parc-stats` |
+| **Container** | `brainlife/freesurfer-stats:1.2` |
+| **Resources** | 4 CPUs · 29 GB memory · 2.5 h walltime |
+| **Requires** | `FREESURFER_LICENSE` |
+| **Run it** | [doi.org/10.25663/brainlife.app.484](https://doi.org/10.25663/brainlife.app.484) |
 
-#### 📥 Inputs
+#### Inputs
 
 | Input | Datatype | Required | Description |
 |---|---|---|---|
 | `parcellation` | `neuro/surface/data` | yes | Surface parcellation: left and right hemisphere .annot files and a label key. Annotations must match the vertices of the input FreeSurfer subject. |
 | `freesurfer` | `neuro/freesurfer` | yes | Output directory of FreeSurfer recon-all for the subject. |
 
-#### 📤 Outputs
+#### Outputs
 
 | Output | Datatype | Description |
 |---|---|---|
@@ -44,7 +44,7 @@ Converts the left and right annotations onto the subject's FreeSurfer surfaces, 
 
 <!-- brainlife-app:end -->
 
-## 🏷️ Versions on brainlife.io
+## Versions on brainlife.io
 
 This repository hosts several related Apps, each built from its own branch. All output a `neuro/parc-stats` dataset.
 
@@ -60,9 +60,9 @@ This repository hosts several related Apps, each built from its own branch. All 
 | Parcellation Statistics | volumetric parcellation | [`parc-stats-v1.2`](https://github.com/brainlife/app-freesurfer-stats/tree/parc-stats-v1.2) | [doi:10.25663/brainlife.app.443](https://doi.org/10.25663/brainlife.app.443) | deprecated |
 | Parcellation Statistics - Deprecated | volumetric parcellation | [`parc-stats-v1.0`](https://github.com/brainlife/app-freesurfer-stats/tree/parc-stats-v1.0) | [doi:10.25663/brainlife.app.374](https://doi.org/10.25663/brainlife.app.374) | deprecated |
 
-## 🚀 Running the App
+## Running the App
 
-### ☁️ On brainlife.io
+### On brainlife.io
 
 Pick the App that matches your data from the table above, choose the inputs from your project and press **Execute**. Every App needs the FreeSurfer recon-all output of the subject; all other images must already be aligned with the FreeSurfer anatomy (alignment is header based).
 
@@ -72,7 +72,7 @@ Pick the App that matches your data from the table above, choose the inputs from
 - **Volumetric parcellation** ([doi:10.25663/brainlife.app.463](https://doi.org/10.25663/brainlife.app.463)): intended for when a surface parcellation/annotation is not available. Volume and cortical thickness values will differ slightly from the surface computations, although within standard deviation.
 - **FreeSurfer Statistics** ([doi:10.25663/brainlife.app.272](https://doi.org/10.25663/brainlife.app.272)): converts the recon-all stats files for the chosen parcellation into tidy CSVs with the open-source [freesurfer-stats](https://github.com/fphammerle/freesurfer-stats) package, with whole-brain, subcortical and, when present, nuclei volumes.
 
-### 💻 Locally
+### Locally
 
 You need [Singularity/Apptainer](https://apptainer.org/), [`jq`](https://jqlang.github.io/jq/) and a [FreeSurfer license](https://surfer.nmr.mgh.harvard.edu/registration.html). FreeSurfer, FSL, the freesurfer-stats Python environment and the compiled MATLAB code run inside containers.
 
@@ -99,7 +99,7 @@ You need [Singularity/Apptainer](https://apptainer.org/), [`jq`](https://jqlang.
    ./main
    ```
 
-## 📦 Outputs
+## Outputs
 
 ```text
 parc-stats/
@@ -110,13 +110,13 @@ parc-stats/
 
 *Freesurfer Statistics* writes its tables (per-hemisphere and combined cortical measures, `whole_brain.csv`, subcortical volumes and `rois.csv`) to `output/parc-stats/`; the subcortical App writes `aseg_nodes.csv`; the surface App writes `cortex.csv`, `whole_brain.csv` and per-hemisphere tables.
 
-## 🩺 Troubleshooting
+## Troubleshooting
 
 - **`Please set FREESURFER_LICENSE in .bashrc`**: export the contents of your FreeSurfer `license.txt` as `FREESURFER_LICENSE` before running `./main`.
 - **`output missing`**: the expected CSV was not produced. Check that the FreeSurfer directory contains the `stats` and `mri` files for the chosen parcellation, or, for the surface App, that the annotation matches the subject's surfaces.
 - **`stats computation failed. check derivatives and error log`**: `mri_segstats` did not produce a summary for a measure. Check that the measure maps and parcellation are valid and aligned with the FreeSurfer anatomy.
 
-## 📚 Citing
+## Citing
 
 > [!TIP]
 > If you use this App in your work, please cite the App, the software it builds on and brainlife.io (below). GitHub's **Cite this repository** button gives the App citation in APA and BibTeX.
@@ -133,7 +133,7 @@ If you use these Apps, please cite FreeSurfer and brainlife.io:
 - Bullock et al. Associative white matter connecting the dorsal and ventral posterior human cortex. *Brain Structure and Function* 224:2631-2660 (2019). [doi:10.1007/s00429-019-01907-8](https://doi.org/10.1007/s00429-019-01907-8)
 - Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
 
-## 👥 Authors
+## Authors
 
 - Brad Caron
 
@@ -141,7 +141,7 @@ If you use these Apps, please cite FreeSurfer and brainlife.io:
 
 The Apps use [vistasoft](https://github.com/vistalab/vistasoft), [jsonlab](https://github.com/fangq/jsonlab), [wma_tools](https://github.com/DanNBullock/wma_tools) and [freesurfer-stats](https://github.com/fphammerle/freesurfer-stats).
 
-## 💰 Funding
+## Funding
 
 [![Wellcome-226486/Z/22/Z](https://img.shields.io/badge/Wellcome-226486%2FZ%2F22%2FZ-purple.svg)](https://wellcome.org/)
 [![NIH-NINDS-U24NS140384](https://img.shields.io/badge/NIH_NINDS-U24NS140384-green.svg)](https://reporter.nih.gov/project-details/11261037)
@@ -160,6 +160,6 @@ The Apps use [vistasoft](https://github.com/vistalab/vistasoft), [jsonlab](https
 
 <sub>brainlife.io is publicly funded, and acknowledging that support helps keep it running. This App was developed with support from Wellcome, the U.S. National Institutes of Health (including the BRAIN Initiative BRAIN CONNECTS program: The Axonal Projectome EXchange, U24NS140384, and the Center for Mesoscale Connectomics, UM1NS132207) and the U.S. National Science Foundation.</sub>
 
-## ⚖️ License
+## License
 
 [MIT](https://github.com/brainlife/app-freesurfer-stats/blob/master/LICENSE). FreeSurfer itself is distributed under its own [license](https://surfer.nmr.mgh.harvard.edu/fswiki/FreeSurferSoftwareLicense).
